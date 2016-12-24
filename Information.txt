@@ -1,0 +1,35 @@
+Developing Environment and Software Used:
+• Autoit 3.3.8.1+ (www.autoitscript.com)
+• SciTE4AutoIt3 (www.autoitscript.com)
+• Koda Form Desiner (http://koda.darkhost.ru/)
+
+Licence:
+• GNU GPL v3.0
+
+Features:
+  1 Capable to create File in Byte TO GB in instant speed.(NTFS only)
+  2 Faster Method Creates any size of file in just seconds.(NTFS only)
+  3 Internal 2MB Buffer used to create file so it RAM is low consumed.
+  4 EFIC use Pattern writing like 0x00 to 0xFF.
+  5 Also write random data so it can create Non-compressible File(s).
+  6 Also used to Secure overwrite Data.
+  7 Easy to use Interface.
+  8 Tested on Windows xp, Windows 7(32bit and 64bit)
+
+Change Log:
+
+April 30nd, 2013 v1.2.0.0
+• Minor GUI and Bug Fixed.
+• Added Ability to create Lineary Incremental and Decremental File Size.
+
+April 22nd, 2013 v1.1.0.0
+• Minor GUI and Bug Fixed.
+• Added Ability to create zero byte files.
+
+January 16th, 2013 v1.0.0.0:
+• Added batch files creation
+• Added Random Function to create Non Compressible File
+• Added to set file attributes, time stamp and file name
+
+October 07th, 2012 v0.9.1
+• Intial Release
