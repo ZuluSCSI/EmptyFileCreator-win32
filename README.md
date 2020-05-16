@@ -1,3 +1,8 @@
+ 
+ [<img align="right" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/instagram.svg" width="50" height="50" />](http://www.instagram.com/gajjartejas)
+ [<img align="right" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/twitter.svg" width="50" height="50" />](http://www.twitter.com/gajjartejas)
+ [<img align="right" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/reddit.svg" width="50" height="50" />](http://www.reddit.com/u/gajjartejas)
+
 # EFIC-EmptyFileCreator
 EFIC (Empty File Creator) is a small and reliable application that create file in various size and Pattern. EFIC use two method to create file. First is instant writing and second is Pattern Writing. EFIC is use Windows API and RAM Buffer to create file using various pattern. Pattern range is 0x00 to 0xFF are used to create file.Example: If we use 0x41 pattern for writing the all sector will be filled with 41 41 41 41 etc. when you open this file in notepad you can see equivalent ASCII char AAAA. So it also can be used to secure overwriting file Disc.
 
