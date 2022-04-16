@@ -4,16 +4,16 @@
 #AutoIt3Wrapper_Outfile=EFIC_v1.2.0.0_x86.exe
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_UseUpx=n
-#AutoIt3Wrapper_Res_Comment=EFIC1.2.0.0
-#AutoIt3Wrapper_Res_Description=EFIC1.2.0.0
+#AutoIt3Wrapper_Res_Comment=EFIC1.0.0.0
+#AutoIt3Wrapper_Res_Description=EFIC1.0.0.0
 #AutoIt3Wrapper_Res_Fileversion=1.2.0.0
 #AutoIt3Wrapper_Res_LegalCopyright=Copyright (c) 2012-2013 Gajjar Tejas
 #AutoIt3Wrapper_Res_Field=AutoIt Version|%AutoItVer%
-#AutoIt3Wrapper_Res_Field=CompanyName|Gajjar Tejas's Blog
+#AutoIt3Wrapper_Res_Field=CompanyName|RabbitHoleComputing
 #AutoIt3Wrapper_Res_Field=Compile Date|%longdate% %time%
 #AutoIt3Wrapper_Res_Field=Internal Name|EFIC.exe
 #AutoIt3Wrapper_Res_Field=ProductName|EFIC.exe
-#AutoIt3Wrapper_Res_Field=ProductVersion|1.2.0.0
+#AutoIt3Wrapper_Res_Field=ProductVersion|1.0.0.0
 #AutoIt3Wrapper_Res_Field=OriginalFilename|EFIC.exe
 #AutoIt3Wrapper_Res_File_Add=Resources\wintop.jpg, rt_rcdata, wintop
 #AutoIt3Wrapper_AU3Check_Stop_OnWarning=y
@@ -40,11 +40,11 @@ OnAutoItExitRegister("_FreeBuffers") ;Empty 2MB Memory Buffer on exit
 Opt("MustDeclareVars", 1)
 
 #region global Variables
-Global Const $s_Current_Version = "1.2.0.0"
-Global Const $s_Win_Title = "EFIC" & $s_Current_Version
+Global Const $s_Current_Version = "1.0.0.0"
+Global Const $s_Win_Title = "AzulSCSI File Creator" & $s_Current_Version
 Global Const $s_Build_Date = FileGetVersion(@ScriptFullPath, "Compile date")
-Global Const $i_xWidth = 282
-Global Const $i_yHight = 360
+Global Const $i_xWidth = 280
+Global Const $i_yHight = 250
 Global Const $i_xWinPos = (@DesktopWidth - $i_xWidth) / 2
 Global Const $i_yWinPos = (@DesktopHeight - $i_yHight) / 2
 
@@ -55,8 +55,6 @@ Global $__g_apBuffers = 0, $__g_iMaxWriteSize = (1024 ^ 2) * 2, $__g_hCryptConte
 #region ### START Koda GUI section ###
 Local $idMainWin = GUICreate($s_Win_Title, $i_xWidth, $i_yHight, $i_xWinPos, $i_yWinPos)
 GUISetBkColor(0xFFFFFF)
-Local $idPic1 = GUICtrlCreatePic("", 0, 0, 281, 41, 67108864)
-_ResourceSetImageToCtrl($idPic1, "wintop")
 
 #region Location
 GUICtrlCreateGroup("Location", 5, 10, 270, 65)
@@ -67,7 +65,7 @@ Local $idButton_Browse = GUICtrlCreateButton("Browse...v", 195, 33, 75, 25)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 #endregion Location
 
-GUICtrlCreateGroup("Options", 5, 86, 270, 225)
+GUICtrlCreateGroup("Options", 5, 86, 270, 108)
 GUICtrlSetFont(-1, 8, 800, 0, "MS Sans Serif")
 
 #region Read File Size
@@ -81,82 +79,25 @@ Local $idButton_Menu_Size = GUICtrlCreateButton("6", 230, 101, 30, 23)
 GUICtrlSetFont(-1, 10, 400, 0, "Webdings")
 #endregion Read File Size
 
-#region Read Filling Char
-Local $idLabel_Filling_Bytes = GUICtrlCreateLabel("Fill With:", 15, 135, 62, 17)
-Local $idCombo_Fill_Pattern = GUICtrlCreateCombo("", 85, 132, 130, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "Do Not Fill (Faster)|Random Hex Type-1|Random Hex Type-2|Random Hex Type-3|Custom Hex---->", "Do Not Fill (Faster)")
-GUICtrlSetTip(-1, "" _
-		 & "Do Not Fill: Faster Create File on NTFS using NUL Char" & @CRLF _
-		 & "Random Hex Type-1: First Random Char Considered Then Every Files Will Filled With This Char." & @CRLF _
-		 & "Random Hex Type-2: Different Random Char Considered According To File Index Then Every Files Will Has Different Char Respectively." & @CRLF _
-		 & "Random Hex Type-3: Fill Every File(s) With Random Data." & @CRLF _
-		 & "Custom Hex: Fill Every File(s) With Custom Hex (ex 0x41, 0x22 etc.)", "Filling Charactor/Data(Optional)", 1)
-Local $idInput_Filling_Char = GUICtrlCreateInput("", 223, 132, 36, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_UPPERCASE))
-GUICtrlSetTip(-1, "" _
-		 & "Represent Hexadecimal Pattern Like 0x41, 0xFF Without Trailing 0x." & @CRLF _
-		 & "Example: 00, 41, 1C, FF etc." & @CRLF & "If Empty Then 0x00 Will be Filled as Char.", "Filling Pattern(Optional)", 1)
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlSetLimit(-1, 2)
-#endregion Read Filling Char
-
-#region Read No of File To Create
-Local $idLabel_No_Of_Files = GUICtrlCreateLabel("No of Files:", 15, 165, 57, 17)
-Local $idInput_No_Of_Files = GUICtrlCreateInput("1", 85, 162, 46, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_RIGHT, $ES_NUMBER))
+#region Read Number of Files To Create
+Local $idLabel_Num_Of_Files = GUICtrlCreateLabel("Qty. of Files:", 15, 165, 65, 17)
+Local $idInput_Num_Of_Files = GUICtrlCreateInput("1", 85, 162, 46, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_RIGHT, $ES_NUMBER))
 GUICtrlSetData(-1, 1)
-GUICtrlSetTip(-1, "No of Files To Create", "Specify File(s)(Required)", 1)
-Local $idButton_UP_DOWN_2 = GUICtrlCreateUpdown($idInput_No_Of_Files)
-Local $idButton_No_of_Files = GUICtrlCreateButton("6", 140, 161, 30, 23)
+GUICtrlSetTip(-1, "Qty. of Files To Create", "Specify File(s)(Required)", 1)
+Local $idButton_UP_DOWN_2 = GUICtrlCreateUpdown($idInput_Num_Of_Files)
+Local $idButton_Num_of_Files = GUICtrlCreateButton("6", 140, 161, 30, 23)
 GUICtrlSetFont(-1, 10, 400, 0, "Webdings")
-#endregion Read No of File To Create
-
-#region Read %Increment
-Local $idLabel_Increment = GUICtrlCreateLabel("Increment:", 15, 195, 68, 17)
-Local $idButton_Sign_Increment = GUICtrlCreateButton("+", 85, 191, 30, 23)
-GUICtrlSetTip(-1, "Increment(+) Or Decrement(-) Operation", "Operation", 1)
-Local $idInput_Size_Increment = GUICtrlCreateInput("0", 120, 192, 82, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_RIGHT, $ES_NUMBER))
-GUICtrlSetTip(-1, "Enter amount of Percentage or Bytes,KB,MB,GB" & @CRLF & "To Increment or Decrement Size of Files When It Created", "Incremental Amount(Optional)", 1)
-Local $idButton_UP_DOWN_Increment = GUICtrlCreateUpdown($idInput_Size_Increment)
-
-Local $idCombo_Size_Increment = GUICtrlCreateCombo("", 208, 192, 51, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "%|Bytes|KB|MB|GB", "%")
-#endregion Read %Increment
-
-#region Read File Attributes
-Local $idLabel_Attribute = GUICtrlCreateLabel("Add Attribute:", 15, 225, 68, 17)
-Local $idCheckbox_Attributes_Readonly = GUICtrlCreateCheckbox("R", 85, 221, 25, 23, BitOR($GUI_SS_DEFAULT_CHECKBOX, $BS_PUSHLIKE))
-GUICtrlSetTip(-1, "READONLY", "Tip", 1)
-Local $idCheckbox_Attributes_Archive = GUICtrlCreateCheckbox("A", 115, 221, 25, 23, BitOR($GUI_SS_DEFAULT_CHECKBOX, $BS_PUSHLIKE))
-GUICtrlSetTip(-1, "ARCHIVE", "Tip", 1)
-Local $idCheckbox_Attributes_System = GUICtrlCreateCheckbox("S", 145, 221, 25, 23, BitOR($GUI_SS_DEFAULT_CHECKBOX, $BS_PUSHLIKE))
-GUICtrlSetTip(-1, "SYSTEM", "Tip", 1)
-Local $idCheckbox_Attributes_Hidden = GUICtrlCreateCheckbox("H", 175, 221, 25, 23, BitOR($GUI_SS_DEFAULT_CHECKBOX, $BS_PUSHLIKE))
-GUICtrlSetTip(-1, "HIDDEN", "Tip", 1)
-Local $idCheckbox_Attributes_Offline = GUICtrlCreateCheckbox("O", 205, 221, 25, 23, BitOR($GUI_SS_DEFAULT_CHECKBOX, $BS_PUSHLIKE))
-GUICtrlSetTip(-1, "OFFLINE", "Tip", 1)
-Local $idCheckbox_Attributes_TEMPORARY = GUICtrlCreateCheckbox("T", 235, 221, 25, 23, BitOR($GUI_SS_DEFAULT_CHECKBOX, $BS_PUSHLIKE))
-GUICtrlSetTip(-1, "TEMPORARY", "Tip", 1)
-#endregion Read File Attributes
-
-#region Read File Date
-Local $idLabel_Timestamp = GUICtrlCreateLabel("Timestamp:", 15, 255, 58, 17)
-Local $idInput_Date = GUICtrlCreateDate("", 85, 252, 141, 21)
-Local $h_Input_Date = GUICtrlGetHandle($idInput_Date)
-GUICtrlSetTip(-1, "yyyy.mm.dd HH:mm:ss", "Time Format", 1)
-Local $idButton_Time_Stamp = GUICtrlCreateButton("6", 230, 251, 30, 23)
-GUICtrlSetFont(-1, 10, 400, 0, "Webdings")
-_GUICtrlDTP_SetFormat($h_Input_Date, "yyyy.MM.dd HH:mm:ss")
-Local $tDate = _GetCurrentSystemTime()
-#endregion Read File Date
+#endregion Read Number of Files To Create
 
 #region Read File Name and Extension
 Local $idLabel_Filename = GUICtrlCreateLabel("Filename:", 15, 285, 49, 17)
-Local $idInput_File_Name = GUICtrlCreateInput("", 85, 282, 81, 21)
+Local $idInput_File_Name = GUICtrlCreateInput("", 85, 132, 81, 21)
 GUICtrlSendMsg(-1, $EM_SETCUEBANNER, True, "File Name")
 GUICtrlSetTip(-1, "Enter File Name", "File Name(Optional)", 1)
-Local $idInput_Extension = GUICtrlCreateInput("", 170, 282, 56, 21)
+Local $idInput_Extension = GUICtrlCreateInput("", 170, 132, 56, 21)
 GUICtrlSendMsg(-1, $EM_SETCUEBANNER, True, ".extension")
 GUICtrlSetTip(-1, "Enter File Extension Starting With .(dot)", "Extension(Optional)", 1)
-Local $idButton_Extension = GUICtrlCreateButton("6", 230, 281, 30, 23)
+Local $idButton_Extension = GUICtrlCreateButton("6", 230, 131, 30, 23)
 GUICtrlSetFont(-1, 10, 400, 0, "Webdings")
 
 #endregion Read File Name and Extension
@@ -164,20 +105,16 @@ GUICtrlSetFont(-1, 10, 400, 0, "Webdings")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 #region Info Label and Progress
-Local $idButton_Create_File = GUICtrlCreateButton("Create", 5, 312, 75, 25)
+Local $idButton_Create_File = GUICtrlCreateButton("Create", 5, 199, 75, 25)
 GUICtrlSetState(-1, $GUI_DISABLE)
 
-Local $idProgress = GUICtrlCreateProgress(85, 312, 190, 12)
+Local $idProgress = GUICtrlCreateProgress(85, 199, 190, 12)
 GUICtrlSetState(-1, $GUI_HIDE)
 
-Local $idProgress_child = GUICtrlCreateProgress(85, 325, 190, 12)
+Local $idProgress_child = GUICtrlCreateProgress(85, 212, 190, 12)
 GUICtrlSetState(-1, $GUI_HIDE)
 
-Local $idLabel_Info = GUICtrlCreateLabel("Info:Ready", 5, 342, 227, 17)
-
-Local $idLabel_About = GUICtrlCreateLabel("About", 240, 342, 32, 17)
-GUICtrlSetColor(-1, 0x0000FF)
-GUICtrlSetCursor(-1, 3)
+Local $idLabel_Info = GUICtrlCreateLabel("Status: Ready", 5, 229, 227, 17)
 
 #endregion Info Label and Progress
 
@@ -205,8 +142,8 @@ Local $MenuItem16 = GUICtrlCreateMenuItem("30 GB", $hBtnArrowContext0)
 Local $MenuItem17 = GUICtrlCreateMenuItem("50 GB", $hBtnArrowContext0)
 #endregion File Size Contex Menu
 
-#region No of Files Contex Menu
-Local $hBtnArrowContext1 = GUICtrlCreateContextMenu($idButton_No_of_Files)
+#region Number of Files Contex Menu
+Local $hBtnArrowContext1 = GUICtrlCreateContextMenu($idButton_Num_of_Files)
 Local $MenuItem30 = GUICtrlCreateMenuItem("Clear", $hBtnArrowContext1)
 GUICtrlCreateMenuItem("", $hBtnArrowContext1)
 Local $MenuItem31 = GUICtrlCreateMenuItem("1 File", $hBtnArrowContext1)
@@ -216,47 +153,8 @@ Local $MenuItem34 = GUICtrlCreateMenuItem("4 Files", $hBtnArrowContext1)
 Local $MenuItem35 = GUICtrlCreateMenuItem("5 Files", $hBtnArrowContext1)
 Local $MenuItem36 = GUICtrlCreateMenuItem("6 Files", $hBtnArrowContext1)
 Local $MenuItem37 = GUICtrlCreateMenuItem("7 Files", $hBtnArrowContext1)
-Local $MenuItem38 = GUICtrlCreateMenuItem("8 Files", $hBtnArrowContext1)
-Local $MenuItem39 = GUICtrlCreateMenuItem("9 Files", $hBtnArrowContext1)
-Local $MenuItem40 = GUICtrlCreateMenuItem("10 Files", $hBtnArrowContext1)
-Local $MenuItem41 = GUICtrlCreateMenuItem("20 Files", $hBtnArrowContext1)
-Local $MenuItem42 = GUICtrlCreateMenuItem("30 Files", $hBtnArrowContext1)
-Local $MenuItem43 = GUICtrlCreateMenuItem("40 Files", $hBtnArrowContext1)
-Local $MenuItem44 = GUICtrlCreateMenuItem("50 Files", $hBtnArrowContext1)
-Local $MenuItem45 = GUICtrlCreateMenuItem("60 Files", $hBtnArrowContext1)
-Local $MenuItem46 = GUICtrlCreateMenuItem("70 Files", $hBtnArrowContext1)
-Local $MenuItem47 = GUICtrlCreateMenuItem("80 Files", $hBtnArrowContext1)
-Local $MenuItem48 = GUICtrlCreateMenuItem("90 Files", $hBtnArrowContext1)
-Local $MenuItem49 = GUICtrlCreateMenuItem("100 Files", $hBtnArrowContext1)
-Local $MenuItem50 = GUICtrlCreateMenuItem("1000 Files", $hBtnArrowContext1)
-#endregion No of Files Contex Menu
 
-#region File Attribute Contex Menu
-Local $hBtnArrowContext2 = GUICtrlCreateContextMenu($idButton_Time_Stamp)
-Local $MenuItem60 = GUICtrlCreateMenuItem("Set All To File Creation", $hBtnArrowContext2,-1,1)
-GUICtrlSetState(-1, $GUI_CHECKED)
-Local $MenuItem62 = GUICtrlCreateMenuItem("Set Manually", $hBtnArrowContext2,-1,1)
-
-
-
-;~ GUICtrlCreateMenuItem("", $idButton_Time_Stamp)
-;~ Local $MenuItem63 = GUICtrlCreateMenu("Custom", $hBtnArrowContext2)
-
-;~ Local $MenuItem62_0 = GUICtrlCreateMenu("Modified Time", $MenuItem63)
-;~ Local $MenuItem62_0_3 = GUICtrlCreateMenuItem("Set Manually", $MenuItem62_0)
-;~ Local $MenuItem62_0_2 = GUICtrlCreateMenuItem("Set To File Creation", $MenuItem62_0)
-
-
-;~ Local $MenuItem62_1 = GUICtrlCreateMenu("Created Time", $MenuItem63)
-;~ Local $MenuItem62_1_3 = GUICtrlCreateMenuItem("Set Manually", $MenuItem62_1)
-;~ Local $MenuItem62_1_2 = GUICtrlCreateMenuItem("Set To File Creation", $MenuItem62_1)
-
-
-;~ Local $MenuItem62_2 = GUICtrlCreateMenu("Accessed Time", $MenuItem63)
-;~ Local $MenuItem62_2_3 = GUICtrlCreateMenuItem("Set Manually", $MenuItem62_2)
-;~ Local $MenuItem62_2_2 = GUICtrlCreateMenuItem("Set To File Creation", $MenuItem62_2)
-
-#endregion File Attribute Contex Menu
+#endregion Number of Files Contex Menu
 
 #region Choose Dir Contex Menu
 Local $hBtnArrowContext3 = GUICtrlCreateContextMenu($idButton_Browse)
@@ -286,43 +184,14 @@ While 1
 		Case $GUI_EVENT_CLOSE
 			Exit
 
-		Case $idCombo_Fill_Pattern
-			If GUICtrlRead($idCombo_Fill_Pattern) = "Custom Hex---->" Then
-				GUICtrlSetState($idInput_Filling_Char, $GUI_ENABLE)
-			Else
-				GUICtrlSetState($idInput_Filling_Char, $GUI_DISABLE)
-			EndIf
-
-		Case $idButton_Sign_Increment
-			If GUICtrlRead($idButton_Sign_Increment) = "+" Then
-				GUICtrlSetData($idButton_Sign_Increment, "--")
-			Else
-				GUICtrlSetData($idButton_Sign_Increment, "+")
-			EndIf
-
 		Case $idButton_Create_File
 
 			;Folder Path with back\
 			Local $s_File = GUICtrlRead($idInput_File)
-			Local $s_File_Attribute = _FileGetAttributes() ;Get Attributes
-
-			;Read Date Range from control
-			Local $a_Date_Range = _GUICtrlDTP_GetSystemTime($h_Input_Date)
-
-			;Get Date Format
-			Local $s_Date_Range = StringFormat("%04d%02d%02d%02d%02d%02d", _
-					$a_Date_Range[0], _
-					$a_Date_Range[1], _
-					$a_Date_Range[2], _
-					$a_Date_Range[3], _
-					$a_Date_Range[4], _
-					$a_Date_Range[5])
 
 			;Read File Size from control and convert into Bytes
 			Local $i_File_Size = _Conv_Bytes(Number(GUICtrlRead($idInput_File_Size)), $idCombo_Size)
-			Local $s_Pattern_Type = GUICtrlRead($idCombo_Fill_Pattern)
-			Local $s_Filling_Char = GUICtrlRead($idInput_Filling_Char)
-			Local $i_File_No_of_Files = Number(GUICtrlRead($idInput_No_Of_Files))
+			Local $i_File_Num_of_Files = Number(GUICtrlRead($idInput_Num_Of_Files))
 			Local $s_File_Name = GUICtrlRead($idInput_File_Name)
 			If $s_File_Name = "" Then $s_File_Name = "File"
 
@@ -334,62 +203,24 @@ While 1
 				ContinueLoop
 			EndIf
 
-			Local $aPatterns
-			If $s_Pattern_Type = "Do Not Fill (Faster)" Then
-				$aPatterns = -2
-			ElseIf $s_Pattern_Type = "Random Hex Type-1" Then
-				$aPatterns = Random(0, 255, 1)
-			ElseIf $s_Pattern_Type = "Random Hex Type-3" Then
-				$aPatterns = -1
-			ElseIf $s_Pattern_Type = "Custom Hex---->" Then
-				$aPatterns = Dec($s_Filling_Char)
-				If @error Then
-					MsgBox(16, "Error", "Pattern Must in 0x00 - 0xFF Range", 0, $idMainWin)
-					GUICtrlSetState($idInput_Filling_Char, $GUI_FOCUS)
-					ContinueLoop
-				EndIf
-			EndIf
-
-			If $i_File_No_of_Files <= 0 Then
-				MsgBox(16, "Error", "No of File Can Not Zero, Negative or Empty: " & $i_File_No_of_Files, 0, $idMainWin)
-				GUICtrlSetState($idInput_No_Of_Files, $GUI_FOCUS)
+			If $i_File_Num_of_Files <= 0 Then
+				MsgBox(16, "Error", "Number of Files Can Not Zero, Negative or Empty: " & $i_File_Num_of_Files, 0, $idMainWin)
+				GUICtrlSetState($idInput_Num_Of_Files, $GUI_FOCUS)
 				ContinueLoop
 			EndIf
 
-			Local $iFile_Size_Increment = Number(GUICtrlRead($idInput_Size_Increment))
-			If $iFile_Size_Increment > 0 Then
-				If GUICtrlRead($idCombo_Size_Increment) = "%" Then
-					$iFile_Size_Increment = Floor(_Conv_Bytes(($i_File_Size * ($iFile_Size_Increment / 100)), $idCombo_Size_Increment))
-				Else
-					$iFile_Size_Increment = _Conv_Bytes($iFile_Size_Increment, $idCombo_Size_Increment)
-				EndIf
-
-				If GUICtrlRead($idButton_Sign_Increment) = "--" Then $iFile_Size_Increment *= -1
-
-				If $iFile_Size_Increment = 0 Then
-					MsgBox(16, "Error", "Percentage Convergence Reached To Zero. Please Increase File Size or Percentage.", 0, $idMainWin)
-					GUICtrlSetState($idInput_Size_Increment, $GUI_FOCUS)
-					ContinueLoop
-				EndIf
-			ElseIf $iFile_Size_Increment < 0 Then
-				MsgBox(48, "Error", "Incremental File Size or Percentage Can not Negative. Please Use Increment/Decrement Button To Change (+ or -)Sign.", 0, $idMainWin)
-				GUICtrlSetState($idButton_Sign_Increment, $GUI_FOCUS)
-				ContinueLoop
-			EndIf
-
-			;Calculate Total No of Max File(s) To be Created
-			For $i = 1 To $i_File_No_of_Files
-				If ($i - 1) * $iFile_Size_Increment + $i_File_Size < 0 Then ExitLoop
+			;Calculate Total Number of Max File(s) To be Created
+			For $i = 1 To $i_File_Num_of_Files
+				If ($i - 1) + $i_File_Size < 0 Then ExitLoop
 			Next
 
-			If ($i - 1) < $i_File_No_of_Files Then
-				MsgBox(48, "Error", "File Size Reached To Negative at :" & $i & @CRLF & "Please Set to No of File To: " & $i - 1, 0, $idMainWin)
-				GUICtrlSetState($idInput_Size_Increment, $GUI_FOCUS)
+			If ($i - 1) < $i_File_Num_of_Files Then
+				MsgBox(48, "Error", "File Size Reached Negative at :" & $i & @CRLF & "Please Set Number of Files To: " & $i - 1, 0, $idMainWin)
 				ContinueLoop
 			EndIf
 
 			;Calculate Total Amount of Data To be Created in Bytes <--
-			Local $iTotalFilesSize = $i_File_Size * $i_File_No_of_Files + $iFile_Size_Increment * $i_File_No_of_Files * ($i_File_No_of_Files - 1) / 2
+			Local $iTotalFilesSize = $i_File_Size * $i_File_Num_of_Files + $i_File_Num_of_Files * ($i_File_Num_of_Files - 1) / 2
 
 			;Calculate Drive Free Space in Bytes <--
 			Local $iDriveFreeSpace = DriveSpaceFree(_sGetDrive($s_File)) * 1024 * 1024
@@ -426,13 +257,13 @@ While 1
 			;Remove All File if Exists
 			Local $s_File_Child
 			Local $s_File_Locked = ""
-			For $i = 1 To $i_File_No_of_Files
+			For $i = 1 To $i_File_Num_of_Files
 
 				$s_File_Child = $s_File & $s_File_Name & "_" & $i & $s_File_Extension
 
 				If FileExists($s_File_Child) Then
 					GUICtrlSetData($idLabel_Info, StringFormat("Removing File: %d", $i))
-					GUICtrlSetData($idProgress, $i * 100 / $i_File_No_of_Files)
+					GUICtrlSetData($idProgress, $i * 100 / $i_File_Num_of_Files)
 					FileSetAttrib($s_File_Child, "-R+A")
 					If FileDelete($s_File_Child) = 0 Then $s_File_Locked &= $s_File_Child & @CRLF
 				EndIf
@@ -446,14 +277,13 @@ While 1
 			Local $iTimeDiff = 0
 			Local $iIntialTime = TimerInit()
 
-			For $i = 1 To $i_File_No_of_Files
+			For $i = 1 To $i_File_Num_of_Files
 				GUICtrlSetData($idLabel_Info, StringFormat("Creating File: %d", $i))
 
 				$s_File_Child = $s_File & $s_File_Name & "_" & $i & $s_File_Extension
-				If $s_Pattern_Type = "Random Hex Type-2" Then $aPatterns = Random(0, 255, 1) ;every time random pattern
 
 				;Call Func ===================================>
-				_Create_File($s_File_Child, $i_File_Size, $aPatterns)
+				_Create_File($s_File_Child, $i_File_Size)
 				If @error Then
 					Switch _Error_Msg(@error)
 						Case 3 ;Abort
@@ -465,31 +295,24 @@ While 1
 
 					EndSwitch
 				EndIf
-				$i_File_Size += $iFile_Size_Increment
+;				$i_File_Size += $iFile_Size_Increment
 
-				GUICtrlSetData($idProgress, $i * 100 / $i_File_No_of_Files)
+				GUICtrlSetData($idProgress, $i * 100 / $i_File_Num_of_Files)
 			Next
 
 			$iTimeDiff = TimerDiff($iIntialTime)
 
-			For $i = 1 To $i_File_No_of_Files
+			For $i = 1 To $i_File_Num_of_Files
 				GUICtrlSetData($idLabel_Info, StringFormat("Setting File Attributes and Time: %d", $i))
-				GUICtrlSetData($idProgress, $i * 100 / $i_File_No_of_Files)
+				GUICtrlSetData($idProgress, $i * 100 / $i_File_Num_of_Files)
 
 				$s_File_Child = $s_File & $s_File_Name & "_" & $i & $s_File_Extension
 				FileSetAttrib($s_File_Child, "-RASHOT")
-				If $s_File_Attribute <> "+" Then FileSetAttrib($s_File_Child, $s_File_Attribute)
-
-				If BitAND(GUICtrlRead($MenuItem60), $GUI_UNCHECKED) Then
-					FileSetTime($s_File_Child, $s_Date_Range, 0)
-					FileSetTime($s_File_Child, $s_Date_Range, 1)
-					FileSetTime($s_File_Child, $s_Date_Range, 2)
-				EndIf
 			Next
 
 			Local $dSpeed = _Time_Xsec($iTimeDiff)
 			Local $dTime = _Speed_Xbps($iTotalFilesSize, $iTimeDiff / 1000)
-			Local $dFiles = _Files_Xfps($i_File_No_of_Files, $iTimeDiff / 1000)
+			Local $dFiles = _Files_Xfps($i_File_Num_of_Files, $iTimeDiff / 1000)
 			GUICtrlSetData($idLabel_Info, "Info:Created in " & $dSpeed & " Speed:" & $dTime)
 			GUICtrlSetTip($idLabel_Info, "" & _
 					"Created in:" & $dSpeed & @CRLF & _
@@ -503,17 +326,11 @@ While 1
 			ShellExecute($s_File)
 			_Enable_Controls()
 
-		Case $idLabel_About
-			_SwAboutDiloag()
-
 		Case $idButton_Menu_Size
 			_ShowMenu($idMainWin, $nMsg, $hBtnArrowContext0)
 
-		Case $idButton_No_of_Files
+		Case $idButton_Num_of_Files
 			_ShowMenu($idMainWin, $nMsg, $hBtnArrowContext1)
-
-		Case $idButton_Time_Stamp
-			_ShowMenu($idMainWin, $nMsg, $hBtnArrowContext2)
 
 		Case $idButton_Browse
 			_ShowMenu($idMainWin, $nMsg, $hBtnArrowContext3)
@@ -577,47 +394,21 @@ While 1
 			GUICtrlSetData($idCombo_Size, "GB")
 
 		Case $MenuItem30
-			GUICtrlSetData($idInput_No_Of_Files, "")
+			GUICtrlSetData($idInput_Num_Of_Files, "")
 		Case $MenuItem31
-			GUICtrlSetData($idInput_No_Of_Files, 1)
+			GUICtrlSetData($idInput_Num_Of_Files, 1)
 		Case $MenuItem32
-			GUICtrlSetData($idInput_No_Of_Files, 2)
+			GUICtrlSetData($idInput_Num_Of_Files, 2)
 		Case $MenuItem33
-			GUICtrlSetData($idInput_No_Of_Files, 3)
+			GUICtrlSetData($idInput_Num_Of_Files, 3)
 		Case $MenuItem34
-			GUICtrlSetData($idInput_No_Of_Files, 4)
+			GUICtrlSetData($idInput_Num_Of_Files, 4)
 		Case $MenuItem35
-			GUICtrlSetData($idInput_No_Of_Files, 5)
+			GUICtrlSetData($idInput_Num_Of_Files, 5)
 		Case $MenuItem36
-			GUICtrlSetData($idInput_No_Of_Files, 6)
+			GUICtrlSetData($idInput_Num_Of_Files, 6)
 		Case $MenuItem37
-			GUICtrlSetData($idInput_No_Of_Files, 7)
-		Case $MenuItem38
-			GUICtrlSetData($idInput_No_Of_Files, 8)
-		Case $MenuItem39
-			GUICtrlSetData($idInput_No_Of_Files, 9)
-		Case $MenuItem40
-			GUICtrlSetData($idInput_No_Of_Files, 10)
-		Case $MenuItem41
-			GUICtrlSetData($idInput_No_Of_Files, 20)
-		Case $MenuItem42
-			GUICtrlSetData($idInput_No_Of_Files, 30)
-		Case $MenuItem43
-			GUICtrlSetData($idInput_No_Of_Files, 40)
-		Case $MenuItem44
-			GUICtrlSetData($idInput_No_Of_Files, 50)
-		Case $MenuItem45
-			GUICtrlSetData($idInput_No_Of_Files, 60)
-		Case $MenuItem46
-			GUICtrlSetData($idInput_No_Of_Files, 70)
-		Case $MenuItem47
-			GUICtrlSetData($idInput_No_Of_Files, 80)
-		Case $MenuItem48
-			GUICtrlSetData($idInput_No_Of_Files, 90)
-		Case $MenuItem49
-			GUICtrlSetData($idInput_No_Of_Files, 100)
-		Case $MenuItem50
-			GUICtrlSetData($idInput_No_Of_Files, 1000)
+			GUICtrlSetData($idInput_Num_Of_Files, 7)
 
 		Case $MenuItem70
 			GUICtrlSetData($idInput_File, @ScriptDir)
@@ -647,54 +438,6 @@ While 1
 				EndIf
 			EndIf
 
-;~ 		Case $MenuItem60;Use Windows Default File Creation Time
-;~ 			If BitAND(GUICtrlRead($MenuItem60), $GUI_CHECKED) Then
-;~ 				GUICtrlSetState($MenuItem60, $GUI_UNCHECKED)
-;~ 				GUICtrlSetState($MenuItem66, $GUI_CHECKED)
-;~ 			Else
-;~ 				GUICtrlSetState($MenuItem60, $GUI_CHECKED)
-;~ 				GUICtrlSetState($MenuItem66, $GUI_UNCHECKED)
-;~ 			EndIf
-
-;~ 		Case $MenuItem61;Set Current Time To Control
-
-;~ 		Case $MenuItem62;Set Current Time To All
-;~ 			If BitAND(GUICtrlRead($MenuItem66), $GUI_CHECKED) Then
-;~ 				GUICtrlSetState($MenuItem66, $GUI_UNCHECKED)
-;~ 			Else
-;~ 				GUICtrlSetState($MenuItem60, $GUI_UNCHECKED)
-;~ 			EndIf
-
-;~ 		Case $MenuItem63;Created
-;~ 			If BitAND(GUICtrlRead($MenuItem66), $GUI_CHECKED) Then
-;~ 				GUICtrlSetState($MenuItem66, $GUI_UNCHECKED)
-;~ 			Else
-;~ 				GUICtrlSetState($MenuItem60, $GUI_UNCHECKED)
-;~ 			EndIf
-
-;~ 		Case $MenuItem64;Modified
-;~ 			If BitAND(GUICtrlRead($MenuItem66), $GUI_CHECKED) Then
-;~ 				GUICtrlSetState($MenuItem66, $GUI_UNCHECKED)
-;~ 			Else
-;~ 				GUICtrlSetState($MenuItem60, $GUI_UNCHECKED)
-;~ 			EndIf
-
-;~ 		Case $MenuItem65;Accessed
-;~ 			If BitAND(GUICtrlRead($MenuItem66), $GUI_CHECKED) Then
-;~ 				GUICtrlSetState($MenuItem66, $GUI_UNCHECKED)
-;~ 			Else
-;~ 				GUICtrlSetState($MenuItem60, $GUI_UNCHECKED)
-;~ 			EndIf
-
-;~ 		Case $MenuItem66;Choose Time From File...
-;~ 			If BitAND(GUICtrlRead($MenuItem66), $GUI_CHECKED) Then
-;~ 				GUICtrlSetState($MenuItem66, $GUI_UNCHECKED)
-;~ 				GUICtrlSetState($MenuItem60, $GUI_CHECKED)
-;~ 			Else
-;~ 				GUICtrlSetState($MenuItem66, $GUI_CHECKED)
-;~ 				GUICtrlSetState($MenuItem60, $GUI_UNCHECKED)
-;~ 			EndIf
-
 		Case $MenuItem80
 			GUICtrlSetData($idInput_Extension, "")
 		Case $MenuItem81
@@ -714,20 +457,15 @@ While 1
 	EndSwitch
 WEnd
 
-Func _Create_File($sFile, $iSize, $aPatterns)
+Func _Create_File($sFile, $iSize)
 	_Create_Blanck_File($sFile, $iSize);<---------------------    Not used in usb drive
 	If @error Then Return SetError(@error)
 
-	If $aPatterns <> "-2" Then ; Fill Pattern
-		_Write_Data($sFile, $iSize, $aPatterns)
-	EndIf
 EndFunc   ;==>_Create_File
 
-Func _Write_Data($sFile, $iSize, $aPatterns)
+Func _Write_Data($sFile, $iSize)
 	Local $hFile, $iWriteSize, $iErr = 0
 
-	; create buffers
-	_CreateBuffers($aPatterns)
 	If @error Then Return SetError(@error)
 
 	$hFile = _FileEx_CreateFile($sFile, $GENERIC_WRITE, BitOR($FILE_SHARE_READ, $FILE_SHARE_WRITE), $OPEN_EXISTING, 0x90000000)
@@ -738,7 +476,7 @@ Func _Write_Data($sFile, $iSize, $aPatterns)
 		$iWriteSize = 1024 * 64 ;bytes
 	EndIf
 
-	_WritePattern($hFile, $iSize, $iWriteSize, $aPatterns)
+	_WritePattern($hFile, $iSize, $iWriteSize)
 	If @error Then $iErr = 1
 	;
 	_WinAPI_CloseHandle($hFile)
@@ -774,17 +512,12 @@ Func _CreateBuffers(Const ByRef $aBuff)
 		_FreeBuffers()
 		Return SetError(3)
 	EndIf
-	; -1 is special value to indicate stream of random data
-	If $aBuff > -1 Then
-		; fill buffer with pattern
-		DllCall("kernel32.dll", "none", "RtlFillMemory", "ptr", $pBuff, "ulong_ptr", $__g_iMaxWriteSize, "byte", $aBuff)
-	EndIf
 	$__g_apBuffers[0] += 1
 	ReDim $__g_apBuffers[$__g_apBuffers[0] + 1]
 	$__g_apBuffers[$__g_apBuffers[0]] = $pBuff
 EndFunc   ;==>_CreateBuffers
 
-Func _WritePattern($hFile, $iSize, $iBuffSize, Const ByRef $aPatterns)
+Func _WritePattern($hFile, $iSize, $iBuffSize)
 
 	If $iBuffSize > $__g_iMaxWriteSize Then $iBuffSize = $__g_iMaxWriteSize
 
@@ -802,9 +535,6 @@ Func _WritePattern($hFile, $iSize, $iBuffSize, Const ByRef $aPatterns)
 				; reset file pointer to beginning of the overwrite segment on successive passes
 				DllCall("kernel32.dll", "bool", "SetFilePointerEx", "handle", $hFile, "int64", -$bytesToWrite, "ptr", 0, "dword", 1)
 			EndIf
-			; check for pseudo-random pass and fill buffer, special pattern of -1
-			; NOTE: $aPatterns is a 0-based array, while $__g_apBuffers is 1-based with a [0] counter
-			If $aPatterns = -1 Then _FillBufferRandom($__g_apBuffers[$i], $bytesToWrite)
 			; write the data
 			If (Not _WinAPI_WriteFile($hFile, $__g_apBuffers[$i], $bytesToWrite, $iBytes)) Or ($bytesToWrite <> $iBytes) Then
 				Return SetError(4)
@@ -868,38 +598,18 @@ Func _Disable_Controls()
 	GUICtrlSetState($idLabel_File_Size, $GUI_DISABLE)
 	GUICtrlSetState($idInput_File_Size, $GUI_DISABLE)
 	GUICtrlSetState($idCombo_Size, $GUI_DISABLE)
-	GUICtrlSetState($idLabel_Filling_Bytes, $GUI_DISABLE)
-	GUICtrlSetState($idCombo_Fill_Pattern, $GUI_DISABLE)
-	GUICtrlSetState($idInput_Filling_Char, $GUI_DISABLE)
 	GUICtrlSetState($idButton_Menu_Size, $GUI_DISABLE)
-	GUICtrlSetState($idLabel_Filling_Bytes, $GUI_DISABLE)
-	GUICtrlSetState($idCombo_Fill_Pattern, $GUI_DISABLE)
-	GUICtrlSetState($idInput_Filling_Char, $GUI_DISABLE)
-	GUICtrlSetState($idLabel_No_Of_Files, $GUI_DISABLE)
-	GUICtrlSetState($idInput_No_Of_Files, $GUI_DISABLE)
+	GUICtrlSetState($idLabel_Num_Of_Files, $GUI_DISABLE)
+	GUICtrlSetState($idInput_Num_Of_Files, $GUI_DISABLE)
 	GUICtrlSetState($idButton_UP_DOWN_2, $GUI_DISABLE)
-	GUICtrlSetState($idButton_No_of_Files, $GUI_DISABLE)
-	GUICtrlSetState($idLabel_Attribute, $GUI_DISABLE)
-	GUICtrlSetState($idLabel_Increment, $GUI_DISABLE)
-	GUICtrlSetState($idButton_Sign_Increment, $GUI_DISABLE)
-	GUICtrlSetState($idInput_Size_Increment, $GUI_DISABLE)
-	GUICtrlSetState($idCombo_Size_Increment, $GUI_DISABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Readonly, $GUI_DISABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Archive, $GUI_DISABLE)
-	GUICtrlSetState($idCheckbox_Attributes_System, $GUI_DISABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Hidden, $GUI_DISABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Offline, $GUI_DISABLE)
-	GUICtrlSetState($idCheckbox_Attributes_TEMPORARY, $GUI_DISABLE)
-	GUICtrlSetState($idLabel_Timestamp, $GUI_DISABLE)
-	GUICtrlSetState($idInput_Date, $GUI_DISABLE);
-	GUICtrlSetState($idButton_Time_Stamp, $GUI_DISABLE)
+	GUICtrlSetState($idButton_Num_of_Files, $GUI_DISABLE)
 	GUICtrlSetState($idLabel_Filename, $GUI_DISABLE)
 	GUICtrlSetState($idInput_Extension, $GUI_DISABLE)
 	GUICtrlSetState($idInput_File_Name, $GUI_DISABLE)
 	GUICtrlSetState($idButton_Extension, $GUI_DISABLE)
 	GUICtrlSetState($idProgress, $GUI_DISABLE)
 	GUICtrlSetState($idButton_Create_File, $GUI_DISABLE)
-	GUICtrlSetState($idLabel_About, $GUI_DISABLE)
+
 	GUICtrlSetState($idButton_Create_File, $GUI_DISABLE)
 EndFunc   ;==>_Disable_Controls
 
@@ -910,94 +620,19 @@ Func _Enable_Controls()
 	GUICtrlSetState($idLabel_File_Size, $GUI_ENABLE)
 	GUICtrlSetState($idInput_File_Size, $GUI_ENABLE)
 	GUICtrlSetState($idCombo_Size, $GUI_ENABLE)
-	GUICtrlSetState($idLabel_Filling_Bytes, $GUI_ENABLE)
-	GUICtrlSetState($idCombo_Fill_Pattern, $GUI_ENABLE)
-	If $s_Pattern_Type = "Custom Hex---->" Then
-		GUICtrlSetState($idInput_Filling_Char, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($idInput_Filling_Char, $GUI_DISABLE)
-	EndIf
 	GUICtrlSetState($idButton_Menu_Size, $GUI_ENABLE)
-	GUICtrlSetState($idLabel_No_Of_Files, $GUI_ENABLE)
-	GUICtrlSetState($idInput_No_Of_Files, $GUI_ENABLE)
+	GUICtrlSetState($idLabel_Num_Of_Files, $GUI_ENABLE)
+	GUICtrlSetState($idInput_Num_Of_Files, $GUI_ENABLE)
 	GUICtrlSetState($idButton_UP_DOWN_2, $GUI_ENABLE)
-	GUICtrlSetState($idButton_No_of_Files, $GUI_ENABLE)
-	GUICtrlSetState($idLabel_Attribute, $GUI_ENABLE)
-	GUICtrlSetState($idLabel_Increment, $GUI_ENABLE)
-	GUICtrlSetState($idButton_Sign_Increment, $GUI_ENABLE)
-	GUICtrlSetState($idInput_Size_Increment, $GUI_ENABLE)
-	GUICtrlSetState($idCombo_Size_Increment, $GUI_ENABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Readonly, $GUI_ENABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Archive, $GUI_ENABLE)
-	GUICtrlSetState($idCheckbox_Attributes_System, $GUI_ENABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Hidden, $GUI_ENABLE)
-	GUICtrlSetState($idCheckbox_Attributes_Offline, $GUI_ENABLE)
-	GUICtrlSetState($idCheckbox_Attributes_TEMPORARY, $GUI_ENABLE)
-	GUICtrlSetState($idLabel_Timestamp, $GUI_ENABLE)
-	GUICtrlSetState($idInput_Date, $GUI_ENABLE);
-	GUICtrlSetState($idButton_Time_Stamp, $GUI_ENABLE)
+	GUICtrlSetState($idButton_Num_of_Files, $GUI_ENABLE)
 	GUICtrlSetState($idLabel_Filename, $GUI_ENABLE)
 	GUICtrlSetState($idInput_Extension, $GUI_ENABLE)
 	GUICtrlSetState($idInput_File_Name, $GUI_ENABLE)
 	GUICtrlSetState($idButton_Extension, $GUI_ENABLE)
 	GUICtrlSetState($idProgress, $GUI_ENABLE)
 	GUICtrlSetState($idButton_Create_File, $GUI_ENABLE)
-	GUICtrlSetState($idLabel_About, $GUI_ENABLE)
 	GUICtrlSetState($idButton_Create_File, $GUI_ENABLE)
 EndFunc   ;==>_Enable_Controls
-
-Func _FileGetAttributes()
-	Local $s_File_Attribute = "+"
-	If GUICtrlRead($idCheckbox_Attributes_Readonly) = $GUI_CHECKED Then $s_File_Attribute &= "R"
-	If GUICtrlRead($idCheckbox_Attributes_Archive) = $GUI_CHECKED Then $s_File_Attribute &= "A"
-	If GUICtrlRead($idCheckbox_Attributes_System) = $GUI_CHECKED Then $s_File_Attribute &= "S"
-	If GUICtrlRead($idCheckbox_Attributes_Hidden) = $GUI_CHECKED Then $s_File_Attribute &= "H"
-	If GUICtrlRead($idCheckbox_Attributes_Offline) = $GUI_CHECKED Then $s_File_Attribute &= "O"
-	If GUICtrlRead($idCheckbox_Attributes_TEMPORARY) = $GUI_CHECKED Then $s_File_Attribute &= "T"
-	Return $s_File_Attribute
-EndFunc   ;==>_FileGetAttributes
-
-Func _SwAboutDiloag()
-	GUISetState(@SW_DISABLE, $idMainWin)
-
-	Local $size = WinGetPos($s_Win_Title)
-	Local $Child_About = GUICreate("About", 298, 230, $size[0] + $i_xWidth / 2 - 297 / 2, $size[1] + $i_yHight / 2 - 310 / 2, BitXOR($GUI_SS_DEFAULT_GUI, $WS_MINIMIZEBOX), BitOR($WS_EX_TOOLWINDOW, $WS_EX_WINDOWEDGE), $idMainWin)
-	GUISetBkColor(0xFFFFFF)
-	Local $idPic1 = GUICtrlCreatePic("", 0, 0, 281, 41, 67108864)
-	_ResourceSetImageToCtrl($idPic1, "wintop")
-	Local $Child_About_GroupBox = GUICtrlCreateGroup("", 3, 3, 285, 192)
-	Local $idLabel1 = GUICtrlCreateLabel("About " & $s_Win_Title, 77, 29, 205, 17)
-	Local $Child_Copyright = GUICtrlCreateLabel("Copyright (c) 2012-13 Gajjar Tejas", 77, 57, 205, 17)
-	Local $Child_Icon = GUICtrlCreateIcon(@ScriptFullPath, -1, 10, 30, 42, 42)
-	Local $Child_Label_Email = GUICtrlCreateLabel("Email:", 10, 90, 65, 17)
-	Local $Child_Label_Website = GUICtrlCreateLabel("Website:", 10, 110, 65, 17)
-	Local $Child_Label_Email_ = GUICtrlCreateLabel("gajjartejas26@gmail.com", 77, 90, 205, 17)
-	GUICtrlSetFont(-1, 8, 400, 4, "MS Sans Serif")
-	GUICtrlSetColor(-1, 0x0000FF)
-	GUICtrlSetCursor(-1, 0)
-	Local $Child_Label_Website_ = GUICtrlCreateLabel("http://www.gajjartejas26.blogspot.com", 77, 110, 205, 17)
-	GUICtrlSetFont(-1, 8, 400, 4, "MS Sans Serif")
-	GUICtrlSetColor(-1, 0x0000FF)
-	GUICtrlSetCursor(-1, 0)
-	Local $Label2 = GUICtrlCreateLabel("EFIC Stand For Empty File Creator" & @CRLF & "Empty File Creator Is Free(GNU GPL v3) Software", 10, 160, 260, 34)
-	Local $Child_Label_Date = GUICtrlCreateLabel("Build Date: ", 10, 130, 65, 17)
-	Local $Child_Label_Date_ = GUICtrlCreateLabel($s_Build_Date, 77, 130, 205, 17)
-	GUICtrlCreateGroup("", -99, -99, 1, 1)
-	Local $Contribute = GUICtrlCreateButton("&Project Homepage", 3, 197, 150, 25)
-	Local $Child_Ok = GUICtrlCreateButton("&OK", 198, 197, 90, 25)
-	GUISetState(@SW_SHOW, $Child_About)
-	Local $msg
-	While 1
-		$msg = GUIGetMsg()
-		If $msg = $Child_Ok Or $msg = $GUI_EVENT_CLOSE Then ExitLoop
-		If $msg = $Contribute Then ShellExecute("http://code.google.com/p/efic/")
-		If $msg = $Child_Label_Email_ Then ShellExecute("mailto:gajjartejas26@gmail.com")
-		If $msg = $Child_Label_Website_ Then ShellExecute("http://www.gajjartejas26.blogspot.com/")
-	WEnd
-
-	GUISetState(@SW_ENABLE, $idMainWin)
-	GUIDelete($Child_About)
-EndFunc   ;==>_SwAboutDiloag
 
 Func _sGetDrive($sPath)
 	Local $szDrive, $szDir, $szFName, $szExt

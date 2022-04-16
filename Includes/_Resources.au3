@@ -9,37 +9,6 @@
 
 _GDIPlus_Startup()
 
-Global Const $RT_CURSOR = 1
-Global Const $RT_BITMAP = 2
-Global Const $RT_ICON = 3
-Global Const $RT_MENU = 4
-Global Const $RT_DIALOG = 5
-Global Const $RT_STRING = 6
-Global Const $RT_FONTDIR = 7
-Global Const $RT_FONT = 8
-Global Const $RT_ACCELERATOR = 9
-Global Const $RT_RCDATA = 10
-Global Const $RT_MESSAGETABLE = 11
-Global Const $RT_GROUP_CURSOR = 12
-Global Const $RT_GROUP_ICON = 14
-Global Const $RT_VERSION = 16
-Global Const $RT_DLGINCLUDE = 17
-Global Const $RT_PLUGPLAY = 19
-Global Const $RT_VXD = 20
-Global Const $RT_ANICURSOR = 21
-Global Const $RT_ANIICON = 22
-Global Const $RT_HTML = 23
-Global Const $RT_MANIFEST = 24
-
-Global Const $SND_RESOURCE = 0x00040004
-Global Const $SND_SYNC = 0x0
-Global Const $SND_ASYNC = 0x1
-Global Const $SND_MEMORY = 0x4
-Global Const $SND_LOOP = 0x8
-Global Const $SND_NOSTOP = 0x10
-Global Const $SND_NOWAIT = 0x2000
-Global Const $SND_PURGE = 0x40
-
 Func _ResourceGet($ResName, $ResType = 10, $ResLang = 0, $DLL = -1) ; $RT_RCDATA = 10
 	Local Const $IMAGE_BITMAP = 0
 	Local $hInstance, $hBitmap, $InfoBlock, $GlobalMemoryBlock, $MemoryPointer, $ResSize
